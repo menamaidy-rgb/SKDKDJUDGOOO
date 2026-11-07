@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CLICK A NUMBER FOR</title>
+<style>
+:root{--bg:#0b1020;--panel:#151d35;--panel2:#202b49;--text:#f4f6ff;--muted:#aab5d2;--accent:#8b7cff;--gold:#ffd166;--green:#57d6a0;--red:#ff7185}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#202b52,#0b1020 55%);color:var(--text);font:16px system-ui,Segoe UI,sans-serif;min-height:100vh}
+button,input{font:inherit}button{border:0;border-radius:12px;padding:12px 16px;background:linear-gradient(135deg,#8275ff,#5c8cff);color:white;font-weight:800;cursor:pointer}button:disabled{opacity:.4;cursor:not-allowed}.secondary{background:var(--panel2)}.gold{background:linear-gradient(135deg,#f7c95c,#e99635);color:#241b08}.danger{background:#8f344c}.hidden{display:none!important}
+.wrap{max-width:1100px;margin:auto;padding:18px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.brand{font-weight:1000;letter-spacing:2px;font-size:clamp(24px,5vw,42px);text-align:center;margin:24px 0;color:#c6bdff;text-shadow:0 0 25px #8172ff66}
+.panel{background:#151d35eF;border:1px solid #ffffff18;border-radius:20px;padding:18px;box-shadow:0 15px 45px #0005;margin:14px 0}.muted{color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}.profile,.tile{background:var(--panel2);padding:16px;border-radius:15px;border:1px solid #ffffff12}.profile h3,.tile h3{margin:0 0 8px}.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.between{justify-content:space-between}.stack{display:grid;gap:10px}.field{width:100%;padding:12px;border-radius:10px;border:1px solid #465477;background:#0d1428;color:white}.nav{display:flex;gap:8px;flex-wrap:wrap;margin:15px 0}.nav button{flex:1;min-width:125px}.bigcount{font-size:clamp(70px,18vw,150px);font-weight:1000;line-height:1.1;text-align:center;color:#fff;text-shadow:0 0 35px #8b7cff88;user-select:none}.clickzone{padding:26px 12px;border-radius:22px;background:linear-gradient(135deg,#6558d8,#347fce);text-align:center;cursor:pointer;box-shadow:0 12px 35px #536bff44;user-select:none}.clickzone:active{transform:scale(.99)}.progress{height:10px;border-radius:20px;background:#0a1020;overflow:hidden}.progress span{display:block;height:100%;background:linear-gradient(90deg,#6ee7b7,#60a5fa);width:0%}.item{display:flex;justify-content:space-between;gap:12px;align-items:center;background:#202b49;border-radius:13px;padding:12px}.item small{display:block;color:var(--muted)}.pill{border-radius:99px;background:#303d62;padding:5px 10px;font-size:12px;color:#dce4ff}.notice{padding:12px;border-radius:12px;background:#27365c;color:#dce4ff}.success{color:var(--green)}.warn{color:var(--gold)}.footer{text-align:center;color:var(--muted);font-size:12px;padding:25px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><span id="who" class="muted">Sin sesión</span><strong id="balance" class="warn">SALDO: 0 ⭐</strong></div>
+  <div class="brand">CLICK A NUMBER FOR</div>
+
+  <section id="login" class="panel">
+    <h2>Selecciona tu perfil</h2><p class="muted">Elige tu jugador e introduce su contraseña.</p>
+    <div id="profiles" class="grid"></div>
+    <div id="loginbox" class="stack hidden" style="margin-top:16px">
+      <h3 id="loginname"></h3><input id="password" class="field" type="password" placeholder="Contraseña">
+      <div class="row"><button onclick="login()">ENTRAR</button><button class="secondary" onclick="cancelLogin()">VOLVER</button></div>
+      <p id="loginmsg" class="muted"></p>
+    </div>
+    <p class="muted" style="font-size:12px">Prototipo local: los perfiles y contraseñas de esta demostración están dentro del archivo. No uses contraseñas reales.</p>
+  </section>
+
+  <main id="game" class="hidden">
+    <div class="nav">
+      <button onclick="show('play')">JUGAR</button><button onclick="show('missions')">MISIONES</button>
+      <button onclick="show('auras')">AURAS</button><button onclick="show('shop')">TIENDA ⭐</button>
+      <button onclick="show('codes')">CANJEO</button><button onclick="show('rebirth')">RENACER</button>
+      <button onclick="show('pets')">MASCOTAS</button><button onclick="show('pvp')">PVP</button>
+      <button onclick="show('events')">EVENTOS</button><button onclick="show('rank')">RANKING</button>
+      <button onclick="show('luck')">SUERTE 🎰</button><button onclick="show('boss')">JEFES 👹</button>
+      <button onclick="show('fusion')">FUSIÓN 🧬</button><button onclick="show('achievements')">LOGROS 🏅</button>
+      <button onclick="show('vip')">VIP 💎</button><button onclick="show('titles')">TÍTULOS 👑</button>
+      <button onclick="show('worlds')">MUNDOS 🌌</button><button onclick="show('season')">TEMPORADA</button>
+      <button onclick="show('help')">AYUDA</button><button id="adminnav" class="gold hidden" onclick="show('admin')">ADMIN</button>
+      <button class="danger" onclick="logout()">SALIR</button>
+    </div>
+    <section id="play" class="panel page">
+      <div class="row between"><div><h2 id="worldtitle">MUNDO 1 · TIERRA</h2><span class="pill" id="ranklabel">NOVATO</span></div><span class="pill" id="multlabel">Multiplicador x1</span></div>
+      <div class="bigcount" id="count">0</div>
+      <div class="clickzone" onclick="clickGame()"><h2>¡TOCA AQUÍ PARA HACER CLICS!</h2><p>Un toque = tu multiplicador actual</p></div>
+      <div class="row between" style="margin-top:14px"><span class="muted">Progreso a la siguiente misión</span><b id="missionprogress">0 / 1.000</b></div>
+      <div class="progress"><span id="bar"></span></div>
+      <p class="muted">Aura equipada: <b id="equipped">Ninguna</b> · Mascota: <b id="petactive">Ninguna</b></p>
+    </section>
+    <section id="missions" class="panel page hidden"><h2>📜 200 misiones por mundo</h2><p class="muted">Completa objetivos de clics acumulados. Reclama cada premio.</p><div id="missionlist" class="stack"></div></section>
+    <section id="auras" class="panel page hidden"><h2>✨ Auras</h2><p class="muted">100 auras por mundo. Compra y equipa para multiplicar tus clics.</p><div id="auralist" class="stack"></div></section>
+    <section id="shop" class="panel page hidden"><h2>🛒 Tienda de multiplicadores</h2><p class="muted">100 mejoras. Los precios suben progresivamente.</p><div id="shoplist" class="stack"></div></section>
+    <section id="codes" class="panel page hidden"><h2>🎟️ Canjeo de códigos</h2><p class="muted">20 categorías de recompensa. Introduce un código en la categoría que corresponda.</p><div id="codelist" class="stack"></div><p class="muted">Los códigos válidos deben ser creados y comprobados por el administrador/servidor. Este prototipo no contiene un banco secreto de códigos.</p></section>
+    <section id="rebirth" class="panel page hidden"><h2>🔄 Renacimientos</h2><div class="tile"><h3 id="rebirthcount">Renacimientos: 0</h3><p>Al renacer, los clics vuelven a cero. Conservas ⭐, auras y multiplicadores comprados.</p><p class="warn">Cada renacimiento añade +2 al multiplicador permanente.</p><p id="rebirthreq"></p><button class="gold" id="rebirthbtn" onclick="rebirth()">RENACER</button></div></section>
+    <section id="pets" class="panel page hidden"><h2>🐾 Mascotas</h2><p class="muted">Colecciona mascotas que aumentan tus clics. 50 por mundo.</p><div id="petlist" class="stack"></div></section>
+    <section id="pvp" class="panel page hidden"><h2>⚔️ PVP</h2><div class="tile"><h3>Duelo de clics (demostración)</h3><p>Compite contra un rival ficticio durante 10 segundos. En esta versión no hay conexión online con otros jugadores.</p><button onclick="pvp()">INICIAR DUELO</button><p id="pvpresult" class="warn"></p></div></section>
+    <section id="events" class="panel page hidden"><h2>☄️ Eventos</h2><div class="tile"><h3>Invasión de meteoritos</h3><p>Activa un evento local de 60 segundos: cada clic vale el doble.</p><button onclick="eventBoost()">ACTIVAR EVENTO</button><p id="eventmsg" class="warn"></p></div><div class="tile"><h3>Recompensa diaria</h3><p id="dailymsg">Reclama una vez al día.</p><button onclick="daily()">RECLAMAR RECOMPENSA</button></div></section>
+    <section id="rank" class="panel page hidden"><h2>🏆 Rangos y clasificación</h2><div id="rankinfo" class="stack"></div><p class="muted">Ranking local de este dispositivo. El ranking mundial requiere servidor.</p></section>
+    <section id="luck" class="panel page hidden"><h2>🎰 Máquina de suerte</h2><p>Prueba tu suerte y consigue auras. Cada tirada cuesta 2.500 ⭐; una tirada gratis cada 24 horas.</p><div class="tile"><h3 id="luckresult">¿Qué aura te tocará?</h3><div class="row"><button onclick="spin(false)">TIRAR · 2.500 ⭐</button><button class="gold" onclick="spin(true)">TIRADA DIARIA GRATIS</button></div><p class="muted">Probabilidades: común 55%, raro 25%, épico 12%, legendario 6%, mítico 1,8%, divino 0,19%, secreto 0,01%.</p></div></section>
+    <section id="boss" class="panel page hidden"><h2>👹 Jefes de mundo</h2><div class="tile"><h3 id="bossname">Guardián de Tierra</h3><p>Derrota al jefe usando tus clics acumulados. Cada ataque consume 100 clics acumulados.</p><div class="progress"><span id="bossbar"></span></div><p id="bosshealth"></p><button onclick="attackBoss()">ATACAR JEFE</button><button class="secondary" onclick="newBoss()">NUEVO JEFE</button><p id="bossmsg" class="warn"></p></div></section>
+    <section id="fusion" class="panel page hidden"><h2>🧬 Fusión de auras</h2><p>Fusiona tres auras del mismo nivel de rareza para obtener una mejora de fusión permanente.</p><div id="fusioninfo" class="tile"></div><button onclick="fuseAuras()">FUSIONAR 3 AURAS</button></section>
+    <section id="achievements" class="panel page hidden"><h2>🏅 Logros secretos</h2><div id="achievementlist" class="stack"></div></section>
+    <section id="vip" class="panel page hidden"><h2>💎 Membresía VIP</h2><p>Compra niveles VIP con estrellas. Cada nivel mejora tus clics de forma permanente.</p><div id="viplist" class="stack"></div></section>
+    <section id="titles" class="panel page hidden"><h2>👑 Títulos</h2><p>Desbloquea títulos por tus hazañas y elige cuál mostrar.</p><div id="titlelist" class="stack"></div></section>
+    <section id="worlds" class="panel page hidden"><h2>🌌 Mundos y dimensiones</h2><p>Completa objetivos para desbloquear nuevas dimensiones. Cada mundo tiene sus propias auras.</p><div id="worldlist" class="stack"></div></section>
+    <section id="season" class="panel page hidden"><h2>🏆 Temporada actual</h2><p>Temporada local de 30 días con hitos de progreso y premios.</p><div id="seasonlist" class="stack"></div></section>
+    <section id="help" class="panel page hidden"><h2>🆘 Ayuda y soporte</h2><p>Haz clic para sumar puntos, completa misiones para ganar ⭐, compra auras y mejoras, y renace para aumentar tu multiplicador permanente.</p><p>El Mundo 2 se desbloquea al completar la misión 200 del Mundo 1.</p></section>
+    <section id="admin" class="panel page hidden">
+      <h2>🛡️ Panel ADMIN · JORGE</h2>
+      <p class="muted">Centro de control local del prototipo. Solo aparece al entrar con JORGE (ADMIN).</p>
+      <div class="tile stack">
+        <h3>⭐ Herramientas de administrador</h3>
+        <input id="adminamount" class="field" type="number" min="0" placeholder="Cantidad de ⭐ para mi perfil">
+        <button onclick="adminGive()">AÑADIR ⭐ A MI PERFIL</button>
+        <button class="secondary" onclick="adminExport()">EXPORTAR MI PROGRESO (JSON)</button>
+      </div>
+      <div class="tile">
+        <h3>🔐 Perfiles y contraseñas de prueba</h3>
+        <p class="warn">Estas son las claves guardadas dentro del HTML. Cualquier persona que tenga el archivo puede inspeccionarlo; no uses estas claves en cuentas reales.</p>
+        <div id="adminusers" class="stack"></div>
+        <button class="secondary" onclick="togglePasswords()" id="passwordToggle">OCULTAR CONTRASEÑAS</button>
+      </div>
+      <div class="tile">
+        <h3>🌌 Cómo desbloquear todos los mundos</h3>
+        <div id="adminworldguide" class="stack"></div>
+      </div>
+      <div class="tile">
+        <h3>💾 Estado del guardado</h3>
+        <p id="savestatus" class="success">Guardado automático activado en este navegador.</p>
+        <button class="secondary" onclick="save();alert('Progreso guardado en este navegador.')">GUARDAR AHORA</button>
+      </div>
+      <p class="muted">Este panel es local, no un sistema seguro de administración online. Para proteger contraseñas y administrar jugadores reales hace falta un servidor con autenticación.</p>
+    </section>
+  </main>
+  <div class="footer">CLICK A NUMBER FOR · Prototipo HTML local · Guarda progreso en este navegador</div>
+</div>
+<script>
+const USERS={"JORGE (ADMIN)":"2020202admi!20","ACHURY":"10101go200","HELLEN":"elmao211€399","SARA":"apswo29292929","MATHIAS":"apeelWwooo120"};
+let selected="",user="",data=null,eventUntil=0;
+const $=id=>document.getElementById(id);
+function fresh(){return {clicks:0,total:0,stars:0,rebirths:0,world:1,auras:[],equipped:0,upgrades:[],missions:{},pets:[],pet:0,lastDaily:"",codes:[],completedWorld1:false,freeSpin:"",fusions:0,bossHP:10000,bossMax:10000,bossWins:0,achievements:[],vip:0,title:"Novato",unlockedWorlds:[1],seasonStart:Date.now(),seasonClaims:[],dailyStreak:0};}
+function key(){return "clicknumber_"+user}
+function save(){if(user&&data){try{localStorage.setItem(key(),JSON.stringify(data));localStorage.setItem("clicknumber_last_profile",user);if($("savestatus"))$("savestatus").textContent="Guardado: "+new Date().toLocaleTimeString("es-CO");refresh()}catch(e){if($("savestatus"))$("savestatus").textContent="No se pudo guardar: almacenamiento lleno o bloqueado."}}}
+function load(){try{return {...fresh(),...JSON.parse(localStorage.getItem(key())||"{}")}}catch{return fresh()}}
+function init(){
+ $("profiles").innerHTML=Object.keys(USERS).map(n=>`<div class="profile"><h3>${n}</h3><button onclick="choose('${n.replace(/'/g,"")}')">SELECCIONAR</button></div>`).join("");
+ // Guarda al cerrar/recargar y al enviar la pestaña a segundo plano.
+ window.addEventListener("pagehide",save);
+ window.addEventListener("beforeunload",save);
+ document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")save()});
+ // Respaldo periódico por si el usuario deja la pestaña abierta.
+ setInterval(()=>{if(user&&data)save()},5000);
+}
+function choose(n){selected=n;$("loginbox").classList.remove("hidden");$("loginname").textContent=n;$("password").value="";$("loginmsg").textContent="";}
+function cancelLogin(){$("loginbox").classList.add("hidden")}
+function login(){if($("password").value!==USERS[selected]){$("loginmsg").textContent="Contraseña incorrecta.";return}user=selected;data=load();$("login").classList.add("hidden");$("game").classList.remove("hidden");$("who").textContent="Jugador: "+user+" · "+(data.title||"Novato");$("adminnav").classList.toggle("hidden",user!=="JORGE (ADMIN)");show("play");refresh();renderAll();}
+function logout(){save();user="";data=null;$("game").classList.add("hidden");$("login").classList.remove("hidden");$("who").textContent="Sin sesión";$("balance").textContent="SALDO: 0 ⭐";$("password").value=""}
+function show(id){document.querySelectorAll(".page").forEach(x=>x.classList.add("hidden"));$(id).classList.remove("hidden");if(id==="missions")renderMissions();if(id==="auras")renderAuras();if(id==="shop")renderShop();if(id==="codes")renderCodes();if(id==="pets")renderPets();if(id==="rank")renderRank();if(id==="rebirth")renderRebirth();if(id==="luck")renderLuck();if(id==="boss")renderBoss();if(id==="fusion")renderFusion();if(id==="achievements")renderAchievements();if(id==="vip")renderVIP();if(id==="titles")renderTitles();if(id==="worlds")renderWorlds();if(id==="season")renderSeason();if(id==="admin")renderAdmin();}
+function auraName(i){const names=["TIERRA","FUEGO","HIELO","RAYO","BOSQUE","AGUA","SOMBRA","LUZ","CRISTAL","GALAXIA"];return names[i]||("AURA "+String(i+1).padStart(2,"0"))}
+function auraMult(i){return i===0?2:i<10?i+2:(i+1)*3}
+function auraCost(i){return Math.floor(2000*Math.pow(1.22,i))}
+function upgradeMult(i){return i+2}
+function upgradeCost(i){return Math.floor(1200*Math.pow(1.16,i))}
+function totalMult(){let m=1+data.rebirths*2;if(data.equipped)m*=auraMult(data.equipped-1);data.upgrades.forEach(i=>m*=upgradeMult(i));if(data.pet)m*=1+data.pet*.05;if(data.vip)m*=1+[0,.05,.10,.25,.50,1][data.vip];if(data.fusions)m*=1+data.fusions*.25;if(Date.now()<eventUntil)m*=2;return Math.floor(m)}
+function clickGame(){let n=totalMult();data.clicks+=n;data.total+=n;save();renderProgress()}
+function refresh(){$("balance").textContent="SALDO: "+data.stars.toLocaleString("es-CO")+" ⭐";$("count").textContent=data.clicks.toLocaleString("es-CO");$("multlabel").textContent="Multiplicador x"+totalMult().toLocaleString("es-CO");$("equipped").textContent=data.equipped?auraName(data.equipped-1):"Ninguna";$("petactive").textContent=data.pet?"Mascota nivel "+data.pet:"Ninguna";$("worldtitle").textContent="MUNDO "+data.world+(data.world===1?" · TIERRA":" · GALAXIA");$("rebirthcount").textContent="Renacimientos: "+data.rebirths;$("ranklabel").textContent=rankName();renderProgress()}
+function renderProgress(){let idx=Math.min(199,Math.floor(Math.log10(data.total+1)*12));let req=missionReq(idx);$("missionprogress").textContent=data.total.toLocaleString("es-CO")+" / "+req.toLocaleString("es-CO");$("bar").style.width=Math.min(100,data.total/req*100)+"%"}
+function missionReq(i){return Math.floor(1000*Math.pow(1.42,i))}
+function missionReward(i){return Math.floor(100*Math.pow(1.28,i))}
+function renderMissions(){let arr=[];for(let i=0;i<200;i++){let req=missionReq(i),done=!!data.missions[data.world+"_"+i]||data.total>=req;arr.push(`<div class="item"><div><b>Misión ${i+1}</b><small>${req.toLocaleString("es-CO")} clics · Premio ${missionReward(i).toLocaleString("es-CO")} ⭐</small></div><button ${data.missions[data.world+"_"+i]||data.total<req?"disabled":""} onclick="claimMission(${i})">${data.missions[data.world+"_"+i]?"RECLAMADA":done?"RECLAMAR":"BLOQUEADA"}</button></div>`)}$("missionlist").innerHTML=arr.join("")}
+function claimMission(i){let k=data.world+"_"+i;if(data.missions[k]||data.total<missionReq(i))return;data.missions[k]=true;data.stars+=missionReward(i);if(data.world===1&&i===199){data.completedWorld1=true;alert("¡MUNDO 2 DESBLOQUEADO!")}save();renderMissions()}
+function renderAuras(){$("auralist").innerHTML=Array.from({length:100},(_,i)=>{let owned=data.auras.includes(data.world+"_"+i),eq=data.equipped===i+1&&data.world===1;let cost=auraCost(i),m=auraMult(i);return `<div class="item"><div><b>${auraName(i)} <span class="pill">${rarity(i)}</span></b><small>Precio: ${cost.toLocaleString("es-CO")} ⭐ · Multiplicador x${m}</small></div><button ${owned?"":data.stars<cost?"disabled":""} onclick="${owned?`equipAura(${i})`:`buyAura(${i})`}">${owned?(eq?"EQUIPADA":"EQUIPAR"):"COMPRAR"}</button></div>`}).join("")}
+function buyAura(i){let c=auraCost(i),k=data.world+"_"+i;if(data.stars<c||data.auras.includes(k))return;data.stars-=c;data.auras.push(k);save();renderAuras()}
+function equipAura(i){if(!data.auras.includes(data.world+"_"+i))return;data.equipped=i+1;save();renderAuras()}
+function renderShop(){$("shoplist").innerHTML=Array.from({length:100},(_,i)=>{let owned=data.upgrades.includes(i);let c=upgradeCost(i);return `<div class="item"><div><b>Multiplicador x${upgradeMult(i)}</b><small>Precio: ${c.toLocaleString("es-CO")} ⭐</small></div><button ${owned||data.stars<c?"disabled":""} onclick="buyUpgrade(${i})">${owned?"COMPRADO":"COMPRAR"}</button></div>`}).join("")}
+function buyUpgrade(i){let c=upgradeCost(i);if(data.stars<c||data.upgrades.includes(i))return;data.stars-=c;data.upgrades.push(i);save();renderShop()}
+function renderCodes(){$("codelist").innerHTML=Array.from({length:20},(_,i)=>{let reward=Math.round(100*Math.pow(10,i/19));return `<div class="item"><div><b>Opción ${i+1}</b><small>Recompensa: ${reward.toLocaleString("es-CO")} ⭐ · Hasta 300 códigos gestionados por opción</small></div><div style="display:flex;gap:6px;min-width:48%;"><input class="field" id="code${i}" placeholder="CODE_XXXX_XXXX_XXXX"><button onclick="redeem(${i},${reward})">CANJEAR</button></div></div>`}).join("")}
+function redeem(i,reward){let v=$("code"+i).value.trim().toUpperCase();if(!/^CODE_[A-Z0-9]{4,8}_[A-Z0-9]{4,8}_[A-Z0-9]{4,8}$/.test(v)){alert("Formato inválido. Ejemplo: CODE_1101_4993_3000");return}if(data.codes.includes(v)){alert("Ese código ya fue usado en esta cuenta.");return}alert("Este prototipo no tiene servidor de validación. Ningún código se ha aceptado.");}
+function renderRebirth(){let req=Math.floor(100000*Math.pow(5,data.rebirths));$("rebirthreq").textContent="Requisito: "+req.toLocaleString("es-CO")+" clics acumulados."; $("rebirthbtn").disabled=data.total<req}
+function rebirth(){let req=Math.floor(100000*Math.pow(5,data.rebirths));if(data.total<req)return;data.rebirths++;data.clicks=0;data.total=0;save();renderRebirth();alert("¡Renacimiento completado! Conservas ⭐, auras y mejoras. +2 multiplicador permanente.")}
+function renderPets(){$("petlist").innerHTML=Array.from({length:50},(_,i)=>{let c=5000*(i+1)*(i+1),owned=data.pets.includes(i);return `<div class="item"><div><b>${["Dragón","Lobo de hielo","Fénix","Gólem","Zorro"][i%5]} ${i+1}</b><small>Precio: ${c.toLocaleString("es-CO")} ⭐ · Bono adicional</small></div><button ${owned||data.stars<c?"disabled":""} onclick="buyPet(${i},${c})">${owned?"OBTENIDA":"COMPRAR"}</button></div>`}).join("")}
+function buyPet(i,c){if(data.stars<c||data.pets.includes(i))return;data.stars-=c;data.pets.push(i);data.pet=i+1;save();renderPets()}
+function rankName(){let t=data.total;if(t>=1e9)return"DIVINO";if(t>=1e8)return"LEYENDA";if(t>=1e6)return"MAESTRO";if(t>=1e5)return"PRO";if(t>=1e3)return"PRINCIPIANTE";return"NOVATO"}
+function renderRank(){$("rankinfo").innerHTML=`<div class="item"><b>Rango actual</b><span>${rankName()}</span></div><div class="item"><b>Clics acumulados</b><span>${data.total.toLocaleString("es-CO")}</span></div><div class="item"><b>Renacimientos</b><span>${data.rebirths}</span></div><div class="item"><b>Estrellas</b><span>${data.stars.toLocaleString("es-CO")}</span></div>`}
+function daily(){let today=new Date().toISOString().slice(0,10);if(data.lastDaily===today){$("dailymsg").textContent="Ya reclamaste la recompensa de hoy.";return}data.lastDaily=today;data.stars+=100+Math.min(2900,data.rebirths*100);save();$("dailymsg").textContent="¡Recompensa diaria recibida!"; }
+function eventBoost(){eventUntil=Date.now()+60000;$("eventmsg").textContent="¡Evento activo durante 60 segundos! Tus clics valen el doble.";refresh()}
+function pvp(){let rival=Math.floor(Math.random()*5000)+100;let mine=totalMult()*10;$("pvpresult").textContent=mine>=rival?`¡Ganaste el duelo de práctica! ${mine} contra ${rival}.`:`El rival ganó: ${rival} contra tus ${mine}. ¡Inténtalo otra vez!`}
+
+function rarity(i){if(i<25)return"COMÚN";if(i<45)return"RARO";if(i<65)return"ÉPICO";if(i<80)return"LEGENDARIO";if(i<90)return"MÍTICO";if(i<97)return"DIVINO";return"SECRETO"}
+function renderLuck(){$("luckresult").textContent="¿Qué aura te tocará?";}
+function spin(free){let today=new Date().toISOString().slice(0,10);if(free){if(data.freeSpin===today){alert("Ya usaste tu tirada gratis de hoy.");return}data.freeSpin=today}else{if(data.stars<2500){alert("No tienes suficientes estrellas.");return}data.stars-=2500}
+ let r=Math.random()*100,idx;if(r<.01)idx=99;else if(r<.20)idx=97+Math.floor(Math.random()*3);else if(r<2)idx=90+Math.floor(Math.random()*7);else if(r<8)idx=80+Math.floor(Math.random()*10);else if(r<20)idx=65+Math.floor(Math.random()*15);else if(r<45)idx=45+Math.floor(Math.random()*20);else if(r<70)idx=25+Math.floor(Math.random()*20);else idx=Math.floor(Math.random()*25);
+ let k=data.world+"_"+idx;if(!data.auras.includes(k)){data.auras.push(k);$("luckresult").textContent="¡GANASTE "+auraName(idx)+" ("+rarity(idx)+")!";}else{let bonus=500+idx*100;data.stars+=bonus;$("luckresult").textContent="Repetida: recibes "+bonus+" ⭐ como compensación."}save();}
+function bossName(){return ["Guardián de Tierra","Dragón Galáctico","Demonio de Lava","Ángel Celestial","Señor del Abismo","Entidad Secreta"][Math.min(5,data.world-1)]}
+function renderBoss(){$("bossname").textContent=bossName();$("bosshealth").textContent="Vida: "+data.bossHP.toLocaleString("es-CO")+" / "+data.bossMax.toLocaleString("es-CO")+" · Victorias: "+data.bossWins;$("bossbar").style.width=Math.max(0,data.bossHP/data.bossMax*100)+"%"}
+function attackBoss(){if(data.clicks<100){$("bossmsg").textContent="Necesitas al menos 100 clics disponibles.";return}data.clicks-=100;let damage=totalMult()*100;data.bossHP=Math.max(0,data.bossHP-damage);if(data.bossHP===0){data.bossWins++;let reward=1000*data.world;data.stars+=reward;$("bossmsg").textContent="¡JEFE DERROTADO! Ganaste "+reward+" ⭐.";data.bossMax=Math.floor(data.bossMax*1.5);data.bossHP=data.bossMax}else $("bossmsg").textContent="Hiciste "+damage.toLocaleString("es-CO")+" de daño.";save();renderBoss()}
+function newBoss(){data.bossHP=data.bossMax;save();renderBoss();$("bossmsg").textContent="El jefe ha recuperado toda su vida."}
+function renderFusion(){$("fusioninfo").innerHTML="Auras obtenidas: "+data.auras.length+" · Fusiones permanentes: "+data.fusions+"<br><small>Cada fusión consume 3 auras de la misma rareza y otorga +25% de multiplicador permanente. En este prototipo se consumen las 3 auras más antiguas.</small>"}
+function fuseAuras(){if(data.auras.length<3){alert("Necesitas al menos 3 auras.");return}let chosen=data.auras.slice(0,3);let tiers=chosen.map(k=>rarity(Number(k.split("_")[1])));if(!tiers.every(x=>x===tiers[0])){alert("Tus tres primeras auras no tienen la misma rareza. Organiza tu colección para fusionar.");return}data.auras.splice(0,3);data.fusions++;data.equipped=0;save();renderFusion();alert("¡Fusión completada! +25% multiplicador permanente.");}
+const achievementsDef=[["Primeros pasos",1000,"Alcanza 1.000 clics",100],["Millonario de clics",1000000,"Alcanza 1 millón de clics",5000],["Cien millones",100000000,"Alcanza 100 millones de clics",25000],["Renacido",null,"Haz tu primer renacimiento",1000],["Coleccionista",null,"Consigue 10 auras",2500],["Cazador de jefes",null,"Derrota 5 jefes",5000],["Fusión maestra",null,"Realiza 3 fusiones",5000],["Explorador",null,"Desbloquea el Mundo 2",10000]];
+function achievementDone(i){let a=achievementsDef[i];return a[1]!==null?data.total>=a[1]:i===3?data.rebirths>=1:i===4?data.auras.length>=10:i===5?data.bossWins>=5:i===6?data.fusions>=3:data.unlockedWorlds.includes(2)}
+function renderAchievements(){$("achievementlist").innerHTML=achievementsDef.map((a,i)=>{let done=achievementDone(i),claimed=data.achievements.includes(i);return `<div class="item"><div><b>${a[0]}</b><small>${a[2]} · Premio ${a[3].toLocaleString("es-CO")} ⭐</small></div><button ${!done||claimed?"disabled":""} onclick="claimAchievement(${i})">${claimed?"RECLAMADO":done?"RECLAMAR":"BLOQUEADO"}</button></div>`}).join("")}
+function claimAchievement(i){if(!achievementDone(i)||data.achievements.includes(i))return;data.achievements.push(i);data.stars+=achievementsDef[i][3];save();renderAchievements()}
+function renderVIP(){$("viplist").innerHTML=Array.from({length:5},(_,i)=>{let cost=[10000,50000,150000,500000,1500000][i];return `<div class="item"><div><b>VIP ${i+1}</b><small>+${[5,10,25,50,100][i]}% de clics · Precio ${cost.toLocaleString("es-CO")} ⭐</small></div><button ${data.vip>=i+1||data.stars<cost||data.vip!==i?"disabled":""} onclick="buyVIP(${i+1},${cost})">${data.vip>=i+1?"DESBLOQUEADO":"COMPRAR"}</button></div>`}).join("")}
+function buyVIP(level,cost){if(data.vip!==level-1||data.stars<cost)return;data.stars-=cost;data.vip=level;save();renderVIP()}
+const titleDefs=[["Novato",()=>data.total>=0],["El Millonario",()=>data.total>=1000000],["Cazador de Auras",()=>data.auras.length>=10],["Rey de los Clics",()=>data.total>=100000000],["Dios del Renacimiento",()=>data.rebirths>=10],["El Imposible",()=>data.total>=1000000000],["Destructor de Jefes",()=>data.bossWins>=10],["Coleccionista Divino",()=>data.auras.some(k=>rarity(Number(k.split("_")[1]))==="DIVINO"||rarity(Number(k.split("_")[1]))==="SECRETO")]];
+function renderTitles(){$("titlelist").innerHTML=titleDefs.map(([n,fn])=>`<div class="item"><div><b>${n}</b><small>${fn()?"Desbloqueado":"Aún bloqueado"}</small></div><button ${!fn()||data.title===n?"disabled":""} onclick="data.title='${n}';save();renderTitles()">${data.title===n?"EQUIPADO":"EQUIPAR"}</button></div>`).join("")}
+function renderWorlds(){let worlds=[["Tierra",1,0],["Galaxia",2,200],["Infierno",3,5000000],["Celestial",4,50000000],["Abismo",5,500000000],["Dimensión Secreta",6,5000000000]];$("worldlist").innerHTML=worlds.map(([n,id,req])=>{let unlocked=data.unlockedWorlds.includes(id)||(id===2&&data.completedWorld1)||(id>2&&data.total>=req);let how=id===1?"Disponible desde el inicio":id===2?"Completa y reclama la misión 200 del Mundo 1": "Alcanza "+req.toLocaleString("es-CO")+" clics acumulados";return `<div class="item"><div><b>Mundo ${id}: ${n}</b><small>${unlocked?"Desbloqueado":how} · 100 auras</small></div><button ${!unlocked?"disabled":""} onclick="changeWorld(${id})">${data.world===id?"ACTUAL":"ENTRAR"}</button></div>`}).join("")}
+function changeWorld(id){let req=[0,0,0,5000000,50000000,500000000,5000000000][id];if(id===2&&!data.completedWorld1)return;if(id>2&&data.total<req){alert("Todavía no cumples el requisito de este mundo.");return}if(id>2&&!data.unlockedWorlds.includes(id)){data.unlockedWorlds.push(id)}data.world=id;data.equipped=0;save();renderWorlds();renderAuras()}
+function renderSeason(){let days=Math.floor((Date.now()-data.seasonStart)/86400000),points=Math.floor(data.total/1000)+data.bossWins*100;let goals=[100,1000,10000,100000,1000000];$("seasonlist").innerHTML=`<div class="notice">Día ${days+1} de 30 · Puntos de temporada: ${points.toLocaleString("es-CO")}</div>`+goals.map((g,i)=>`<div class="item"><div><b>Hito ${i+1}</b><small>${g.toLocaleString("es-CO")} puntos · Premio ${((i+1)*1000).toLocaleString("es-CO")} ⭐</small></div><button ${points<g||data.seasonClaims.includes(i)?"disabled":""} onclick="claimSeason(${i})">${data.seasonClaims.includes(i)?"RECLAMADO":"RECLAMAR"}</button></div>`).join("")}
+function claimSeason(i){let g=[100,1000,10000,100000,1000000][i],points=Math.floor(data.total/1000)+data.bossWins*100;if(points<g||data.seasonClaims.includes(i))return;data.seasonClaims.push(i);data.stars+=(i+1)*1000;save();renderSeason()}
+
+let showAdminPasswords=true;
+function adminGuard(){if(user!=="JORGE (ADMIN)"){alert("Acceso solo para JORGE (ADMIN).");return false}return true}
+function renderAdmin(){
+ if(!adminGuard())return;
+ $("adminusers").innerHTML=Object.entries(USERS).map(([name,pass])=>`<div class="item"><div><b>${name}</b><small class="adminpass">${showAdminPasswords?pass:"••••••••••••"}</small></div><span class="pill">${localStorage.getItem("clicknumber_"+name)?"TIENE PARTIDA":"SIN PARTIDA"}</span></div>`).join("");
+ $("passwordToggle").textContent=showAdminPasswords?"OCULTAR CONTRASEÑAS":"MOSTRAR CONTRASEÑAS";
+ const worlds=[
+  ["Mundo 1 · Tierra","Disponible desde el inicio."],
+  ["Mundo 2 · Galaxia","Completa y reclama la misión 200 del Mundo 1."],
+  ["Mundo 3 · Infierno","Alcanza 5.000.000 de clics acumulados."],
+  ["Mundo 4 · Celestial","Alcanza 50.000.000 de clics acumulados."],
+  ["Mundo 5 · Abismo","Alcanza 500.000.000 de clics acumulados."],
+  ["Mundo 6 · Dimensión Secreta","Alcanza 5.000.000.000 de clics acumulados."]
+ ];
+ $("adminworldguide").innerHTML=worlds.map(([n,how])=>`<div class="item"><b>${n}</b><small>${how}</small></div>`).join("");
+}
+function togglePasswords(){if(!adminGuard())return;showAdminPasswords=!showAdminPasswords;renderAdmin()}
+function adminGive(){if(!adminGuard())return;let n=Math.max(0,Number($("adminamount").value)||0);data.stars+=Math.floor(n);save();alert("Estrellas añadidas a tu perfil local.")}
+function adminExport(){if(!adminGuard())return;let blob=new Blob([JSON.stringify({user,data},null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="click-a-number-backup.json";a.click();URL.revokeObjectURL(a.href)}
+function renderAll(){refresh();renderMissions();renderAuras();renderShop();renderCodes();renderPets();renderRebirth();renderRank();renderLuck();renderBoss();renderFusion();renderAchievements();renderVIP();renderTitles();renderWorlds();renderSeason()}
+init();
+</script>
+</body>
+</html>
